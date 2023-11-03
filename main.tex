@@ -1,0 +1,560 @@
+\documentclass[11pt,landscape,a4paper,fleqn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{tikz}
+\usetikzlibrary{shapes,positioning,arrows,fit,calc,graphs,graphs.standard}
+\usepackage{multicol}
+\usepackage{wrapfig}
+\usepackage[top=0mm,bottom=3mm,left=1mm,right=1mm]{geometry}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{microtype}
+\usepackage{mathtools}
+\usepackage{ccicons}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{amssymb}
+\usepackage[neveradjust]{paralist}
+\usepackage[shortlabels]{enumitem}
+\usepackage{bbm}
+\usepackage{listings}
+
+
+
+\setdefaultleftmargin{0.5cm}{}{}{}{}{}
+
+\let\bar\overline
+
+\definecolor{myblue}{cmyk}{1,.72,0,.38}
+\definecolor{myorange}{cmyk}{0,0.5,1,0}
+\definecolor{myorange2}{cmyk}{0,0.8,0.8,0}
+\definecolor{darkgreen}{cmyk}{0.97,0,1,0.57}
+
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+%\everymath\expandafter{\the\everymath \color{myblue}}
+%\everydisplay\expandafter{\the\everydisplay \color{myblue}}
+
+\renewcommand{\baselinestretch}{.8}
+\pagestyle{empty}
+
+\global\mdfdefinestyle{header}{%
+linecolor=gray,linewidth=1pt,%
+leftmargin=0mm,rightmargin=0mm,skipbelow=0mm,skipabove=0mm,
+}
+
+\newcommand{\header}{
+\begin{mdframed}[style=header]
+\footnotesize
+\sffamily
+Cheat sheet\\
+Yannick Merkli and Eric BIll,~page~\thepage~of~2
+\end{mdframed}
+}
+
+\newcommand{\BigO}{\mathcal{O}}
+
+
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {0pt}%
+                                {0.5pt}%x
+                                {\color{myorange}\sffamily\small\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{1}{0mm}%
+                                {0pt}%
+                                {0.1pt}%x
+                            	{\color{myorange2}\sffamily\small}}
+
+
+\makeatother
+\setlength{\parindent}{0pt}
+
+\newcommand{\mhl}[1]{\setlength{\fboxsep}{0pt}\colorbox{yellow}{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand\iid{\stackrel{\mathclap{\normalfont\mbox{\tiny{iid}}}}{=}}
+\lstset{
+	basicstyle=\small,
+	mathescape
+}
+
+\begin{document}
+
+\small
+\begin{multicols*}{4}
+
+\section{Basics}
+
+\subsection{Good to know}
+
+$||x||_p = \big( \sum_{i=1}^d |x_i|^p \big)^{\frac{1}{p}}$ \quad $||x||_\infty = \max\limits_{i \in \{1,..,d\}} |x_i|$
+
+\vspace*{-1mm}
+\textbf{Softmax} $\sigma(z)_i = e^{z_i} / \sum_{j=1}^{D} e^{z_j}$
+
+\textbf{CE:} $H(\vec{p}, \vec{q}) = - \sum_{i=1}^n p_i \cdot \log q_i$
+
+\textbf{CE loss:} \mbox{\fontsize{8.5}{6}\selectfont $L(\vec{x}, \vec{y}) = H(\text{one-hot}(y), \text{softmax} \circ g(\vec{x}))$}
+
+\textbf{Implication:} $\phi \implies \psi \Longleftrightarrow \lnot \phi \lor \psi$
+
+\textbf{Mean value:} $f(y) = f(x) + \nabla f(z)^T(y - x)$
+
+\textbf{Gauss}: {\scriptsize $\mathcal{N}(x; \mu, \sigma^2)= \frac{1}{\sqrt{(2\pi)^d}}exp(-\frac{(x-\mu)^2}{2\cdot \sigma^2})$}
+
+CDF: \mbox{\fontsize{8.5}{6}\selectfont $\Phi(v;\mu,\sigma^2) = \int_{-\infty}^{v}\mathcal{N}(y;\mu,\sigma^2)dy=\Phi(\frac{v-\mu}{\sqrt{\sigma^2}};0,1)$}
+
+Lap: \mhl{$\mathbb{P}(Lap(\mu, \sigma) = t ) = \frac{1}{2\sigma} \cdot exp(- \frac{|t - \mu}{\sigma})$}
+
+\textbf{Subadditivity of $\sqrt{\cdot}$:} $\sqrt{x + y} \leq \sqrt{x} + \sqrt{y}$
+
+\textbf{Cauchy Schwarz:} $\langle x,y \rangle \leq ||x||_2 \cdot ||y||_2$
+
+\textbf{Triangel Inequalities:} $||a + b|| \leq ||a|| + ||b||$, $||a - b|| \geq ||a| - |b||$ 
+
+\textbf{Weak duality:} $max_x min_y \leq min_y  max_x$
+
+\section{Norm Inequalities}
+$||x||_\infty \leq ||x||_1 \leq d \cdot ||x||_\infty$\\
+$||x||_\infty \leq ||x||_2 \leq \sqrt{d} \cdot ||x||_\infty$\\
+\textbf{=$>$} if a classifier is safe for a $l_2$ region of size $\epsilon$, it is also safe for a $l_\infty$ region of size $\frac{\epsilon}{\sqrt{d}}$ \section{Adversarial Attacks}
+	
+\textbf{T-FGSM:} \mhl{$x' = x \textcolor{red}{-} \eta$, $\eta =\epsilon \cdot sign(\nabla_x loss_{\textcolor{red}{t}} (x))$}
+
+\textbf{U-FGSM:} \mhl{$x' = x \textcolor{darkgreen}{+} \eta$, $\eta = \epsilon \cdot sign(\nabla_x loss_{\textcolor{darkgreen}{s}} (x))$}
+
+Guarantees $\eta \in [x-\epsilon, x+\epsilon]$, $\eta$ not minimized.
+
+%\vspace*{1mm}
+
+\textbf{C\&W:} Find adv sample $x' = x + \eta \in [0,1]^n$ \textit{and} minimize $||\eta||_p$ via relaxation s.t. $f(x') = t$.\\
+$obj_t$: $obj_t(x+\eta) \leq 0 \Leftrightarrow f(x+\eta) = t$.\\
+Minim. \mbox{\hl{$||\eta||_p + c \cdot obj_t(x+\eta)$ s.t. $x+\eta \in [0,1]^n$}}
+
+
+E.g. {\fontsize{9.5}{6}\selectfont \mbox{$obj_t = \{ CE(x', t) - 1; max(0, 0.5 - p_f(x')_t)\}$}}
+
+$\nabla_\eta ||\eta||_p$ is suboptimal $\rightarrow$ use proxy 
+
+$l_\infty$: proxy \mhl{$L(\eta) = \sum_i max(0, |\eta_i| - \tau)$}. Iteratively decrease $\tau$ until $L(\eta)>0$. Then do GD on $\eta$: $\eta = \eta - \gamma \nabla_\eta(L(\eta) + c \cdot obj_t(x+\eta))$ until $L(\eta) = 0$, then anneal $\tau$ and continue loop.
+
+Constraint $\eta_i \in [-x_i,1-x_i]$: LBFGS-B, PGD
+
+\vspace*{1mm}
+
+%Project $\vec{\eta}$ on hypercube $[-\vec{x}, \vec{1}-\vec{x}]$.
+%$project(\eta_1,..., \eta_n) = (clip_1(\eta_1),...,clip_n(\eta_n))$
+
+\textbf{PGD:} Iterative FGSM with projection to find point in $x_o \pm \epsilon$ that max. loss (not guaranteed to be missclassification.
+
+1. Init $x' = x + \epsilon \cdot rand[-1,1]$;\\
+2. Repeat: $x' \leftarrow x' \textcolor{darkgreen}{+} \epsilon_{step} \cdot sgn(\nabla_{x'} loss_{\textcolor{darkgreen}{s}} (x'))$ (untargeted)
+3. $x' = project(x', x_o, \epsilon)$;
+\vspace*{1mm}
+
+\section{Adversarial Defenses}
+
+\textbf{Defense as Optimization:} $\min_\theta \rho(\theta)$,
+ \colorbox{yellow}{$\rho(\theta) = \mathbb{E}_{(x,y) \sim D} \left[ \max_{\textcolor{red}{x' \in S(x)}} L(\theta, \textcolor{red}{x'}, y) \right]$},\\
+$S(x) = \{ x': ||x - x'||_\infty \leq \epsilon \}$
+
+\textbf{PGD Defense in practice:}\\
+\textbf{1.} Select mini batch $B$ from $D$
+\textbf{2.} $x_{max} = \arg\max_{x' \in S(x)} L(\theta, x', y), \forall (x,y) \in B$
+
+\textbf{3.} $\theta' = \theta - \frac{1}{|B_{max}|} \sum_{(x_{max}, y) \in B_{max}} \hspace*{-2mm} \nabla_\theta L(\theta, x_{max}, y)$
+
+\textbf{Test accuracy:} is test point x classified correctly?
+\textbf{Adveserial accuracy:} are points in region around x classified as x's class?
+
+\vspace*{1mm}
+
+\section{Certification of Neural Networks}
+
+Given NN N, pre-condition $\phi$, post-condition $\psi$ prove: \hl{$\forall i \in I: i \vDash \phi \implies N(i) \vDash \psi$} or return a \textcolor{red}{violation}.
+
+\textbf{Sound:} Algorithms outputs true only when true.
+\textbf{Complete:} Algorithm allways output true when true.
+
+\subsection{Incomplete Methods:}
+
+Over-approx. $\phi$ using relaxation, then push approx. through NN via bound propagation.
+
+\textbf{Box:} \hl{$\hat{x_i} = [l,u]$}, i.e. \mhl{$l \leq x_i \leq u$}. \qquad
+$AT^\#$: $[a,b] +^\#[c,d] = [a+b, c+d]$;
+$-^\#[a,b] = [-b,-a]$;
+
+$ReLU^\#[a,b] = [ReLU(a), ReLU(b)]$;
+
+$\lambda \cdot^\# [a,b] = [\lambda a, \lambda b]$ ($\lambda > 0$)
+
+\textbf{DeepPoly:} $\BigO(n^3L^2)$, $n:=$ max neurons in a layer, $L:=$ Layers. For each $x_i$ keep:
+
+\begin{compactitem}\labelwidth=4em
+	\item \textcolor{blue}{interval constraints} $l_i \leq x_i$, $x_i \leq u_i$
+	\item \textcolor{darkgreen}{relational constraints}: $a_i^\leq \leq x_i$, $x_i \leq a_i^\geq$ where $a_i^\leq, a_i^\geq$ are of the form \mhl{$\sum_j w_j \cdot x_j + \nu$}
+\end{compactitem}
+\vspace*{1mm}
+
+$AT^\#$: Affine$^\#$ is exact\\
+-Affine$^\#$: \textcolor{darkgreen}{rel}: $\sum_j w_j^p \cdot x_j + \nu^p + \sum_j w_j^q \cdot x_j + \nu^q = \sum_j (w_j^p + w_j^q) \cdot x_j + (\nu^p + \nu^q)$;
+
+\textcolor{blue}{int}: \mhl{backsubstitution} up to some layer. Then replace neurons of that layer with its correct \textcolor{blue}{interval constraint} (like Box bounds).
+
+\textcolor{red}{Backsub: sum up all components!}
+
+- $x_j =$ ReLU$^\#(x_i)$: \textcolor{blue}{interval constr.} $x_i \in [l_i, u_i]$:
+\hl{$u_i \leq 0$:} $a_j^\leq = a_j^\geq = 0, l_j = u_j = 0$;
+
+\hl{$l_i \geq 0$:} $a_j^\leq = a_j^\geq = x_i, l_j = l_i, u_j = u_i$;
+
+\hl{$l_i < 0, u_i > 0$:} $\lambda = u_i / (u_i - l_i)$,
+
+Relaxation with $\alpha \in [0,1]$: \\ $a_j^\geq = \alpha \cdot x_i, \ a_j^\leq = \lambda \cdot x_i - \lambda \cdot l_i$
+
+Rule of thumb: $\mathbf{u_i \leq - l_i:} \ \alpha = 0$, else $\alpha = 1$
+
+\textbf{Symbolic bound}: when proving $y_2 > y_1$, use abstract shape of $y_2 - y_1$ and prove $l_{y_2 - y_1} > 0$
+
+\textbf{Holder's inequality}: $\frac{1}{p}+\frac{1}{q} = 1 \implies ||x*y||_1 \leq ||x||_p||y||_q$
+
+\textbf{Bounds with other input norms}: \\$-||a||_q\epsilon+ax'+c \leq min(a\hat{x}+c) \leq max(a\hat{x} +c) \text{\mhl{$\leq ||a||_q\epsilon+ax'+c$}}$;  where $\hat{x}\in {x, ||x-x'||_p<\epsilon}$
+
+\textbf{KKT:} $max_x(f(x)) \ (s.t. \  g(x) \leq 0) \leq max_x min_{\beta \geq 0} f(x) - \beta \cdot g(x) $
+
+\underline{Positive split:}\\
+$max_x(ax+c) \ (s.t. \  -x\leq0) \leq max_x min_\beta(ax+c+\beta x) \leq min_\beta max_x (ax+c + \beta x)$ 
+
+\underline{Negative split:}\\
+$max_x(ax+c) \ (s.t. \ x\leq0) \leq max_x min_\beta (ax +c - \beta x) \leq min_\beta max_x(ax+c-\beta x)$
+
+$=>$ Summarize bounds by taking max
+
+\textbf{Opt $\beta$ with GD}: $\beta_{t+1} = \beta_t - \alpha \nabla_\beta UB $
+
+\textbf{E2E verification}: init empty queue, add full problem without splits, for problem in queue: try to verify, if not verified: pick neuron to split and add subproblems to queue
+
+\subsection{Complete Methods}
+
+Encode NN as MILP instance.\\
+- Affine: $y = Wx+b$ direct MILP constraint.\\
+- $ReLU(x)$: \mbox{\fontsize{9.7}{6}\selectfont \hl{$y \leq x - l_x \cdot (1-a)$, $y \geq x$, $y \leq u_x \cdot a$,}}\\
+\hl{$y \geq 0$, $a \in \{0,1\}$, for neuron bound $x \in [l,u]$.}\\
+\vspace*{-3mm}
+%\vspace*{1mm}
+
+- $\phi = B^\infty_\epsilon(x)$: $x_i - \epsilon \leq x_i' \leq x_i + \epsilon, \forall i$\\
+- precomp. Box bounds: $l_i \leq x_i^p \leq u_i$\\
+- $\psi = o_0 > o_1$: MILP objective $\min o_0 - o_1$. If $\min o_0 - o_1 > 0$, $\psi$ holds.
+
+\section{Certified Defenses}
+
+\subsection{DiffAI}
+\textbf{DiffAI} Certified PGD Defense: minimize 
+
+\mhl{$\rho(\theta) = \mathbb{E}_{(x,y) \sim D} \big[ \max\limits_{\textcolor{red}{z \in \gamma(NN^\#(S(x)))}} L(\theta, \textcolor{red}{z}, y) \big]$}
+
+Use abstract loss $L^\#(\vec{z}, y)$, where $y = $ target label, $\vec{z} = $ vector of logits:
+\vspace*{1mm}
+
+- $L(z, y) = max_{q \neq y} (z_q - z_y)$: Compute \hl{$d_c = z_c - z_y \forall c \in \mathcal{C}$} where $\mathcal{C}$ set of classes and $z_c$ the abstract logit shape of class $i$. Then compute box bounds of $d_c$ and compute max upper bound: \hl{$\max_{c \in \mathcal{C}}(\max(box(d_c)))$}
+
+- $L(z,y) = CE(z,y)$: Compute box bounds $[l_c, u_c]$ of logit shapes $z_c$. $\forall c \in \mathcal{C}$ pick $u_c$ if $c \neq y$, pick $l_c$ if $c = y$. Then \hl{apply softmax to vector $v = [u_0, u_1,.., l_c,.., u_{|\mathcal{C}|}]$ and compute $CE(v', y)$ with $v' = softmax(v)$.}
+
+Cheap relaxations (box) scale but introduce lots of infeasible points: substantial drop in standard accuracy. More complex relaxations make it worse $\rightarrow$ counter-intuitive!!t
+
+\textbf{Comparison:} \underline{Adv train:} Good Acc, Worse verifiablity, easier opt prob \underline{Certified Def:} Worse Acc, Good verifiability, harder opt prob
+
+
+\vspace*{2mm}
+
+\subsection{Convex Layerwise Adversarial Training}
+\textbf{COLT:} PGD training with intermediate NN layer shapes $S_i$. Iterate over layers $h_i$ and find weights $\theta$ for layers $h_{i+1},..,h_D$ that minimize the worst-case loss of $x_i \in S_i$. Weights of previous layers $h_1,..,h_{i}$ are frozen.
+
+\colorbox{yellow}{$\min\limits_\theta \max\limits_{x_i \in S_i} L(h_D(h_{D-1}(... h_{i+1}(x_i))), y_{true})$}
+
+The inner maximization requires projections.
+
+\section{Logic and Deep Learning (DL2)}
+
+\subsection{Querying Neural Networks}
+
+Use standard logic ($\forall, \exists, \land, \lor, f:\mathbb{R}^m \rightarrow \mathbb{R}^n,..$) and high-level queries to impose constraints.
+
+$(class(NN(i)) = 9) = \hspace*{-4mm} \bigwedge\limits_{j=1,j \neq 9}^k \hspace*{-4mm} NN(i)[j] < NN(i)[9]$
+
+Use translation $T$ of logical formulas into differentiable loss function $T(\phi)$ to be solved with gradient-based optimization to minimize $T(\phi)$.
+
+\textbf{Theorem}: \mhl{$\forall x, T(\phi)(x) = 0 \Longleftrightarrow x \vDash \phi$}
+\textbf{Logical Formula to Loss:}
+\begin{center}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{cc}
+	\hline 
+	Logical Term & Translation \\ 
+	\hline 
+	$t_1 \leq t_2$ & $\max(0, t_1 - t_2)$ \\ 
+
+	$t_1 \neq t_2$ & $\mathbbm{1}[t_1 = t_2]$ \\ 
+
+	$t_1 = t_2$ & $T(t_1 \leq t_2 \land t_2 \leq t_1)$ \\ 
+
+	$t_1 < t_2$ & $T(t_1 \leq t_2 \land t_1 \neq t_2)$ \\ 
+
+	$\phi \lor \psi$ & $T(\phi) \cdot T(\psi)$ \\ 
+
+	$\phi \land \psi$ & $T(\phi) + T(\psi)$ \\ 
+	\hline 
+\end{tabular} 
+\end{center}
+\vspace*{-2mm}
+
+Translation is recursive and $T(\phi)(x) \geq 0, \forall x, \phi$
+
+\textbf{Box constraints:} ineffective in GD. Use L-BFGS-B and give box constraints to optimizer.
+
+\vspace*{1mm}
+\subsection{Training NN with Background Knowledge}
+
+Incorporate logical property $\phi$ in NN training.
+
+\iffalse
+- Want cars to rather to be misclassified as truck than dog. $\forall z \in L_\infty(x, \epsilon). y = car \implies NN(z)[truck] > NN(z)[dog] + \delta$.
+
+- Semi-supervised learning, incorporate belief about unlabeled data.
+\fi
+
+\textbf{Problem statement:} find $\theta$ that maximizes the expected value of property.
+
+Maximize $\rho(\theta) = \mathbb{E}_{s \sim D} \big[ \forall z . \phi(z, s, \theta) \big]$.
+
+BUT: Universal quantifiers are difficult.
+
+\textbf{Reformulation:} get the worst violation of $\phi$ and find $\theta$ that minimizes its effect.
+
+minimize \hl{$\rho(\theta) = \mathbb{E}_{s \sim D} \big[ T(\phi)(z_{worst}, s, \theta) \big]$}
+
+where \hl{$z_{worst} = \arg \min_z T(\lnot \phi)(z, s, \theta)$}
+
+In practice, restrict $z$ to a convex set with efficient projections (closed form). One can then remove the constraint from $\phi$ that restricts $z$ on the convex set and do Projected-Gradient-Descent while projecting $z$ onto the convex set.
+
+
+\vspace*{1mm}
+\section{Randomized Smoothing for Robustness}
+
+Construct a classifier \textbf{g} from a classifier \textbf{f} s.t. \textbf{g} has certain statistical robustness guarantees.
+
+Given base classifier $f: \mathbb{R}^d \rightarrow \mathcal{Y}$, construct smoothed classifier $g$ (where \hl{$\epsilon \sim \mathcal{N}(0, \sigma^2 \mathbf{I})$}):
+
+$g(x) := \arg \max_{c \in \mathcal{Y}} \mathbb{P}_\epsilon (f(x + \epsilon) = c)$
+
+\vspace*{1mm}
+\textbf{Robustness Guarantee:} suppose $c_A \in \mathcal{Y}$ (most likely class), $\underline{p_A}, \overline{p_B} \in [0,1]$ satisfy:
+
+\mhl{$\mathbb{P}_\epsilon(f(x + \epsilon) = c_A) \geq \underline{p_A} \geq \overline{p_B} \geq$}
+
+\mhl{$\geq \max\limits_{c \neq c_A} \mathbb{P}_\epsilon (f(x + \epsilon) = c)$}
+
+with $\underline{p_A}$ a lower bound on the true highest probability and $\overline{p_B}$ an upper bound on the true second highest probability. In practice, get bounds via sampling which gives statistical guarantees.
+
+Then: \hl{$g(x + \delta) = c_A$, for all $||\delta||_2 < R$}, 
+
+\mhl{$R := \frac{\sigma}{2}(\phi^{-1}(\underline{p_A}) - \phi^{-1}(\overline{p_B})) \geq 0$} with $\phi^{-1}$ the inverse Gaussian CDF. Certified radius $R$ depends on input $x$ since $\underline{p_A}, \overline{p_B}$ depend on $x$.
+
+\vspace*{1mm}
+\textbf{Notes on CDF:} If $x \sim \mathcal{N}(0,1)$, $p \in [0,1]$, then $\phi^{-1}(p) = \nu$ s.t. $\phi(v) :=\mathbb{P}_x (x \leq \nu) = p$; $\phi^{-1}, \phi$ are monotone, i.e. for $\underline{p_A} \geq \overline{p_B}$: $\phi^{-1}(\underline{p_A}) \geq \phi^{-1}(\overline{p_B})$;
+\mhl{$\phi^{-1}(p) = -\phi^{-1}(1-p), p \in [0,1]$}
+
+If $x \sim \mathcal{N}(\mu_x, \sigma_x^2), y \sim \mathcal{N}(\mu_y, \sigma_y^2)$, than $(x+y) \sim \mathcal{N}(\mu_x + \mu_y, \sigma_x^2 + \sigma_y^2)$ and \mhl{$c\cdot x \sim \mathcal{N}(c\mu_x, c^2\sigma_x^2)$}
+
+\vspace*{1mm}
+\textbf{Certified Accuracy:} Pick target radius $T$ and count \#test points whose certified radius is $R \geq T$ and where the predicted $c_A$ matches the test set label.
+
+\textbf{Standard Accuracy:} Instantiate certified accuracy with $T = 0$
+
+\vspace*{1mm}
+\subsection{Certification Procedure}
+
+\begin{tabular}{l}
+\hline 
+\textbf{function} CERTIFY$(f,\sigma,x,n_0,n_1,\alpha)$ \hfill \\
+\-\hspace{3mm} \texttt{counts0} $\leftarrow$ SampleUnderNoise$(f,x,n_0,\sigma)$ \hfill \\
+\-\hspace{3mm} $\hat{c}_A$ $\leftarrow$ top index in \texttt{counts0} \hfill \\
+\-\hspace{3mm} \texttt{counts1} $\leftarrow$ SampleUnderNoise$(f,x,n_1,\sigma)$ \hfill \\
+\-\hspace{3mm} $\underline{p_a}$ $\leftarrow$ LowerConfBound(\texttt{counts1}[$\hat{c}_A$],$n_1$,1-$\alpha$) \hfill \\
+\-\hspace{3mm} if $\underline{p_a} > \frac{1}{2}$: \hfill \\
+\-\hspace*{6mm} return prediction $\hat{c}_A$, radius $\sigma \phi^{-1}(\underline{p_A})$ \hfill \\
+\-\hspace{3mm} else: return ABSTAIN \hfill \\
+\hline 
+\end{tabular} 
+
+
+
+\textbf{Notes:}
+
+- \mhl{$\hat{c}_A$ is not necessarily the correct test set label}\\
+- Sample 2$\times$ ($n \gg n_0$) to prevent selection bias.\\
+- SampleUnderNoise evaluates $f$ at $x + \epsilon_i$ for $i \in \{1,..,n\}$, returns dict of class counts.\\
+- LowerConfBound returns probability $p_l$ s.t. $p_l \leq p$ with probability $1 - \alpha$, assuming $k \sim Binomial(n,p)$ for unknown $p$.\\
+- $\underline{p_A} > \frac{1}{2}$ ensures $\overline{p_B} < \frac{1}{2}$, thus $\underline{p_A} \geq \overline{p_B}$\\
+- With probability at least $1 - \alpha$, if CERTIFY returns class $\hat{c}_A$ and radius $R = \sigma \phi^{-1}(\underline{p_A})$, then $g(x+\delta) = \hat{c}_A$ for all $||\delta|| < R$.\\
+- To increase $R$, need to increase $\underline{p_A}$. To increase $\underline{p_A}$, get $f$ to classify more noisy points to $\hat{c}_A$. Increasing the \#samples only slowly grows $R$.
+
+\vspace*{1mm}
+\subsection{Inference}
+
+\begin{tabular}{l}
+\hline 
+\textbf{fuction} PREDICT(f,$\sigma$,x,n,$\alpha$) \hfil \\
+\-\hspace*{3mm} \texttt{counts} $\leftarrow$ SampleUnderNoise(f,x,n,$\sigma$) \hfil \\
+\-\hspace*{3mm} $\hat{c}_A, \hat{c}_B$ $\leftarrow$ top two indices from \texttt{counts} \hfill \\
+\-\hspace*{3mm} $n_A, n_B$ $\leftarrow$ \texttt{counts}[$\hat{c}_A$], \texttt{counts}[$\hat{c}_B$] \hfil \\
+\-\hspace*{3mm} if BinomPValue$(n_A,n_A + n_B,0.5) \leq \alpha$: \hfill \\
+\-\hspace*{6mm} return $\hat{c}_A$ \hfill \\
+\-\hspace*{3mm} else: return ABSTAIN \hfill \\ 
+\hline 
+\end{tabular} 
+
+\textbf{Notes:}
+
+- Null hypothesis: true probability of success of $f$ returning $\hat{c}_A$ is $q = 0.5$ \\
+- BinomPValue returns $p$-value of null hypothesis, evaluated on $n$ iid samples with $i$ successes.\\
+- Accept null hypothesis if $p$-value is $> \alpha$\\
+- Reject null hypothesis if $p$-value is $\leq \alpha$\\
+- $\alpha$ small: often accept null hypothesis and ABSTAIN, but more confident in predictions.\\
+- $\alpha$ large: more predictions but more mistakes.\\
+- PREDICT returns wrong class $\hat{c}_A \neq c_A$ with probability at most $\alpha$
+
+\iftrue
+\vspace*{1mm}
+
+\section{Privacy}
+
+\textbf{Types}: Model stealing, model inversion, data extraction, membership inference
+
+\subsection*{Federated learning}
+
+\textbf{FedSGD}: Client: $g_k = \nabla_\theta L(f_\theta(x_k), y_k)$. Server: $\theta -= \alpha\frac{1}{N}\sum_{k=1:N}g_k$. Pro: convergence guaranteed. Cons: requires many rounds, not private.
+$x_{rec} = argmin_{x'} d(\nabla_\theta L(f_\theta(x'), y'), g_k) + \alpha_{reg} \cdot \mathcal{R}(x')$, where $\mathcal{R}$ is prior domain knowledge 
+
+\textbf{FedAvg}: Client: performs Epochs $E$ * Batches $B$ local SGD steps. Server: averages the received models. Pros: less rounds, harder to attack. Attack: create opt variables for each batch and epoch $\tilde{X}_{e,b}^k$, simulate FedAvg to get $\tilde{\theta}_{e,b} := argmin_{\tilde{X}^k} d(\tilde{\theta}_{e,b}, \theta) + \alpha_{reg}\frac{1}{E^2}\sum_{e_1, e_2} \mathcal{R}(g(\tilde{X}_{e1,b}), g(\tilde{X}_{e2,b}))$ with $g(\tilde{X}) = \frac{1}{|D_k|} \sum_{b, i} \tilde{X}_{e,b,i}$, $\mathcal{R}$ avg dist between avg images between every epoch.
+
+\subsection*{Differential Privacy}
+M: data to output, S: set of all outputs where attacker believe they caught you. M is $(\epsilon, \delta)-DP$ if \mhl{$P(M(a) \in S) \leq e^\epsilon P(M(a') \in S) + \delta$} \colorbox{lime}{$\iff e^{-\epsilon} (P(M(a)\in S) -\delta )\leq P(M(a')\in S)$}
+\\$\forall S, (a,a') \in Neigh$
+
+\textbf{Laplace M}: \colorbox{pink}{$f(a)+Lap(0, \Delta_1/\epsilon)$ is $\epsilon-DP$}
+
+\textbf{Gauss M}: \colorbox{pink}{$f(a)+N(0,\sigma^2I)$ is $(\epsilon,\delta)-DP$,} $\sigma=\frac{\Delta_2}{\epsilon}\sqrt{2 \cdot log(1.25)/\delta}$
+
+\textbf{Sensitivity:} $\Delta_p :=max_{a,a'\in Neigh}(||f(a) - f(a')||_p) $ largest possible change in output
+
+\textbf{Post processing}: M $(\epsilon, \delta)-DP => f\circ M$ is $(\epsilon, \delta)-DP$
+
+\textbf{Composition}: $(M_1, M_2) is (\epsilon_1 + \epsilon_2, \delta_1 + \delta_2)-DP$
+
+\textbf{DP makes no assumption on attacker}: still protected from infinite compute $\lor$ side info.
+
+\textbf{DP-SGD}: $T$ iterations with random batch of size $L$, standard SGD with projection of each gradient onto $l_2$ ball of size C, aggregate all gradients to one and add noise $\mathcal{N}(0, \sigma I)$, with $\Delta_2 = C / L$. Yields \mhl{$(qT\epsilon, qT\delta)-DP$.}
+
+\textbf{PATE}: Train teacher model on private data (split data in m subsets and train a teacher on each, final teacher by noisy voting), label $T$ public data instances with teacher, train student. \mhl{$(T\epsilon, 0)-DP$}. Noisy voting: $f(x) = argmax_j( n_j + Lap(0, 2/\epsilon) \rightarrow \Delta_1 = 2$
+
+\subsection*{Synthetic Data}
+Generate new dataset with same statistics as private dataset: select which marginals to meassure (:=\#occurences of attritube combination), meassure marginals and add noise to them.
+
+\textbf{Marginals Selection}: init fully connected graph of all attributes, set mutual info as weight of each edge, compute max spanning tree. $I(X,Y) = \sum_x\sum_y\frac{P(X=x, Y=y)}{P(X=x)P(Y=y)} + N(0, \sigma I)$
+
+\textbf{Inference}: $P(X_1, X_2, X_3) = P(X_1)P(X_2 | X_1)P(X_3 | X_1)$ if $X_1$ is parent of $X_2$ and $X_3$.
+
+\section{Fairness}
+
+$X$: features, $Y$: outcome, $G$: sensitive attributes. Model: for $x\in X: M(x)=\hat{Y}=$ prob. dist. "Group fair does not imply individual fair."
+
+\subsection*{Individual fairness}
+Similar input $=>$ similar output examples: \textbf{L-lipschitz}: $D(M(x), M(x')) \leq Ld(x, x')$, 
+
+\textbf{IF as robustness}: $\mathbbm{1}[M(x) \neq M(x')] \leq L ||x-x'|| \iff$\mhl{$ M(x) = M(x+\delta)$ for $||\delta||_S < \frac{1}{\sqrt{L}}$}. Can now use robustness theory.
+
+\textbf{Fair Representation Learning}: \colorbox{cyan}{Regulator:} determines fairness criteria and data source, \colorbox{cyan}{Producer:} computes fair representation $f_\theta$, \colorbox{cyan}{Consumer:} Trains model $h_\psi$. Final $M :=  h_\psi \circ f_\theta$. \textcolor{darkgreen}{Pros:} efficent re-use, can use transfer learnig. \textcolor{red}{Cons:} less controll over fairness/accuracty trade off, overconfident fairness if consumer is adveserial, startup costs.
+
+\textbf{LCIFR}:\colorbox{cyan}{Regulator:} encode a domain specific notion of similarity in a logical formula $\phi$, such that $x, x' \models \phi$ iff $x,x'$ are similar.
+\colorbox{cyan}{Producer:} We define $S_\phi(x) := \{x\in R^N \mid \phi(x, x')\}$. Use DL2 or MILP to obtain $\delta$ s.t. $\forall x \in S_\phi(x): |f_\phi(x) - f_\phi(x')|_\infty \leq \delta$
+\colorbox{cyan}{Consumer} obtain $x$, $\epsilon$ and train classifier $h_\psi$ to be robust against perturbation of magnitude $\epsilon$ around $x$.
+
+\textbf{Producer opt:} Denote $\omega(x,x') := |f_\phi(x) - f_\phi(x')|_\infty \leq \delta$, encode differentiable loss with \mhl{$L_F = max_{x'\in S_\phi(x)} \mathcal{L}(\phi \implies \omega)(x,x')$} with approximation by finding $x^* := argmin_{x'\in S_\phi (x)} L(\lnot (\phi \implies \omega)(x,x')$, 
+
+\mhl{$L_C = CE_{x,y \sim D}(q(f_\theta(x)), y)$}
+
+\mhl{$L_T = max_{x\sim D} ||x - g(f_\theta(x))||_p$}
+
+$L = \lambda_F L_F + \lambda_C L_C + \lambda_T L_T$,
+q is classifier make $f_\theta$ aware of $h_\psi$, g is decoder checks info in $f_\theta(x)$
+
+\textbf{Consumer opt:} Assume $f_\theta$, train $h_\psi$ with \mhl{$argmin_\psi E_{z \sim f_\theta(D)}[max_{\pi \in [\pm\delta]}L_C(h_\psi(z+\pi), y)]$}
+
+
+\textbf{LASSI}: Extends LCIFR to high dim. \colorbox{cyan}{Producer:} maps point close together with high probability with \textbf{center smoothing}. \colorbox{cyan}{Consumer:} ensures robustness with high prob with \textbf{randomized smoothing}. \colorbox{cyan}{Regulator:} generative model defines similarity in latent space by varying continuous features $S(x) = \{z + \alpha \cdot a_{hair color} \mid \alpha \in [\pm \epsilon]\}$. Ensures fairness with probability of $1 - \alpha_{RS} - \alpha_{CS}$. Problem: hard to transfer guarantees from generative world to real world.
+
+\textbf{Centre smoothing}: RS in multidim. Smooth mapping x $\rightarrow$ z around a centre point.
+
+\subsection*{Group fairness}
+
+\textbf{Demographic parity}: $M(x) \bot G$. Similar decisions on avrage across all groups.(Note $M(x) = \hat{Y})$ $P(\hat{Y}=1 | G=0) = P(\hat{Y}=1 | G=1)$.
+
+\textbf{Equalized odds}: $M(x) \bot G|Y$. Decision can only depend on G via true label. $P(\hat{Y}=1 | Y=0, G=0) = P(\hat{Y}=1 | Y=0, G=1)$ and $P(\hat{Y}=1 | Y=1, G=0) = P(\hat{Y}=1 | Y=1, G=1)$.
+
+\textbf{Equal opportunity}: $M(x) \bot G|Y=1$. Treat only good candidates fairly. $P(\hat{Y}=1 | Y=1, G=0) = P(\hat{Y}=1 | Y=1, G=1)$.
+
+\textbf{Post-processing methods}: \textcolor{darkgreen}{Pros:} classifyer agnostic, efficient. \textcolor{red}{Cons:} no fairness/accuracy tradeoff control, requires test-time access to sensative attributes.
+
+\textbf{In-training methods}: \textcolor{darkgreen}{Pros:} fairness/accuracy tradeoff control, only training time access to sensative att. \textcolor{red}{Cons:} needs access to training pipeline, specialized solution for each task.
+
+\textbf{Pre-processing methods}: \textcolor{darkgreen}{Pros:} agnostic to dowstream steps, downstream does not need sensative attribute. Data: (x,s), encoder: f: (x,s) $\rightarrow$ z, classifyer: g: z $\rightarrow$ y, advesary: h: z $\rightarrow$ s, conditional distributions: $Z_s$, distribution densities: $p_s = P(z | S=s)$.
+
+\textbf{Fairness bounds of downstream classifier}: Let $\Delta^{DP}_{\mathcal{Z}_0, \mathcal{Z}_1}(g) := |E_{z\sim \mathcal{Z}_0}[g(z)] - E_{z\sim \mathcal{Z}_1}[g(z)]| \in [0, 1] $; and $BA_{\mathcal{Z}_0, \mathcal{Z}_1}(h) := \frac{1}{2}(E_{z\sim \mathcal{Z}_0}[1-h(z)] + E_{z\sim \mathcal{Z}_1}[h(z)]) = \int_z (p_0(z)(1 - h(z)) + p_1(z)(h(z)) \in [0.5, 1]$; $h^* := \mathbbm{1}[p_1(z) > p_0(z)]$. For any $g$: \colorbox{yellow}{$\Delta^{DP}_{\mathcal{Z}_0, \mathcal{Z}_1}(g) \leq 2 \cdot BA_{\mathcal{Z}_0, \mathcal{Z}_1}(h^*) - 1$}
+
+\textbf{LAFTR}: jointly train $f, g, h$: \mhl{\mbox{\fontsize{9.5}{6}\selectfont$min_{f,g}max_{h \in \mathcal{H}}(L_c(f(x,s), g) - \gamma L_{adv}(f(x,s), h))$}}. Pro: empirically good fairness. Cons: minmax problem is hard, only approximates $h^*$, E2E fairness is overestimated.
+
+\textbf{FNF}: learn 2 normalizing flows $f_0$, $f_1$ as encoders for $\mathcal{Z}_0$, $\mathcal{Z}_1$. Sample $n$ $(x_i, s_i)$, compute estimate of $q_0, q_1$, apply $f_0, f_1$ and compute $p_0(z), p_1(z)$. With this, we can estimate $h^*$ find $T$ s.t. \mhl{$2 \cdot BA_{\mathcal{Z}_0, \mathcal{Z}_1}(h^*) - 1 \leq T$} with prob $(1-\epsilon)$
+\textcolor{red}{-}Bound $T$ only holds for estimated $q_0, q_1$ not for real ones.\textcolor{darkgreen}{+} low empir. unfairness, safe downs.
+
+
+\textbf{FARE}: $\mathcal{Z}$ space finite by using restricted encoders. Calculate $BA$ exaclty: $BA(h^*) = \sum_{i=1}^{k}max(P_0(z=z_i), P_1(z=z_i)) = \sum_{i=1}^{k}P(z=z_i)max(\frac{P(s=0|z=z_i)}{2P(s=0)},\frac{P(s=1|z=z_i)}{2P(s=1)})$. Fairness aware decision tree with $FairGini(D):= (1-\gamma) Gini_j(D) + \gamma (0.5 - Gini_s(D))$ Goal: high unbal. dist. $y$, high bal. dist. $s \implies$ provable unfairness upper bound
+
+
+\section{Derivatives}
+$(fg)' = f'g + fg'$; $(f/g)' = (f'g - fg')/g^2$
+
+$f(g(x))' = f'(g(x))g'(x)$; $\log(x)' = 1/x$
+
+$\partial_x \mathbf{b}^\top \mathbf{x} = \partial_x \mathbf{x}^\top \mathbf{b} = \mathbf{b}$,
+$\partial_x \mathbf{x}^\top \mathbf{x} = \partial_x  ||\mathbf{x}||_2^2 = 2\mathbf{x}$,
+
+$\partial_x \mathbf{x}^\top \mathbf{A}\mathbf{x} = (\mathbf{A}^\top + \mathbf{A})\mathbf{x}$, $\partial_x(\mathbf{b}^\top \mathbf{A}\mathbf{x}) = \mathbf{A}^\top \mathbf{b}$,
+
+$\partial_X (\mathbf{c}^\top \mathbf{X} \mathbf{b}) = \mathbf{c}\mathbf{b}^\top$,
+$\partial_X (\mathbf{c}^\top \mathbf{X}^\top \mathbf{b}) = \mathbf{b}\mathbf{c}^\top$,
+
+$\partial_x (\| \mathbf{x}-\mathbf{b} \|_2) = \frac{\mathbf{x}-\mathbf{b}}{\|\mathbf{x}-\mathbf{b}\|_2}$,
+$\partial_X (\|\mathbf{X}\|_F^2) = 2\mathbf{X}$,
+
+\mbox{\fontsize{9.5}{6}\selectfont $\partial_x ||\mathbf{x}||_1 = \frac{\mathbf{x}}{|\mathbf{x}|}$,
+$\partial_x \|\mathbf{Ax - b}\|_2^2 = \mathbf{2(A^\top Ax-A^\top b)}$},
+
+%\textbf{Normballs}: $\mathbb{B}_\epsilon^1 \subseteq \mathbb{B}_\epsilon^2 \subseteq \mathbb{B}_\epsilon^\infty$; $\mathbb{B}_\epsilon^\infty \subseteq \mathbb{B}_{\epsilon \cdot d}^1$ ; $\mathbb{B}_\epsilon^\infty \subseteq \mathbb{B}_{\epsilon \cdot \sqrt{d}}^2$; $\mathbb{B}_\epsilon^2 \subseteq \mathbb{B}_{\epsilon \cdot \sqrt{d}}^1$
+
+%\subsection*{Variance \& Covariance}
+%$\mathbb{V}(X){=}\mathbb{E}[(X{-}\mathbb{E}[X])^2]{=}\mathbb{E}[X^2]{-}\mathbb{E}[X]^2$\\
+%$\mathbb{V}(X + Y) = \mathbb{V}(X) + \mathbb{V}(Y) + 2Cov(X,Y)$\\
+%$\mathbb{V}(AX) = A \mathbb{V}(X) A^T$,$\mathbb{V}[\alpha X]=\alpha^2\mathbb{V}[X]$
+
+%$\mathrm{Cov}(X,Y)=\mathbb{E}[(X-\mathbb{E}[X])(Y-\mathbb{E}[Y])]$
+
+
+
+
+
+
+\end{multicols*}
+\end{document}
