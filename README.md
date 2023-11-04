@@ -1,10 +1,10 @@
 # Reliable and Trustworthy Artificial Intelligence
 
-Semester: Fall semester 2020
+Semester: Fall semester 2022
 
 Lecturer: Prof. Martin Vechev
 
-Website: https://www.sri.inf.ethz.ch/teaching/riai2020
+Website: https://www.sri.inf.ethz.ch/teaching/rtai22
 
 Reliable and Trustworthy Artificial Intelligence
 
